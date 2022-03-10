@@ -65,17 +65,24 @@ FVoxelMaterial FCustomWorldGeneratorInstance::GetMaterialImpl(v_flt X, v_flt Y, 
 	FVoxelMaterialBuilder Builder;
 
 	// RGB
-	Builder.SetMaterialConfig(EVoxelMaterialConfig::RGB);
-	Builder.SetColor(FColor::Red);
+	/*Builder.SetMaterialConfig(EVoxelMaterialConfig::RGB);
+	Builder.SetColor(FColor::Red);*/
 
 	// Single index
 	//Builder.SetMaterialConfig(EVoxelMaterialConfig::SingleIndex);
 	//Builder.SetSingleIndex(0); 
 
-	// Multi index
-	//Builder.SetMaterialConfig(EVoxelMaterialConfig::MultiIndex);
-	//Builder.AddMultiIndex(0, 0.5f);
-	//Builder.AddMultiIndex(1, 0.5f);
+	//Multi index
+	Builder.SetMaterialConfig(EVoxelMaterialConfig::MultiIndex);
+
+	if(Z<= 1)
+		Builder.AddMultiIndex(3, 1);
+	if (Z > 1 && Z <=2)
+		Builder.AddMultiIndex(0, 1);
+	if (Z > 2 && Z <= 7)
+		Builder.AddMultiIndex(2, 1);
+	if (Z > 7 )
+		Builder.AddMultiIndex(1, 1);
 
 	return Builder.Build();
 }
