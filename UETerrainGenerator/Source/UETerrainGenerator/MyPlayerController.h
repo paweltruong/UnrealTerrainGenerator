@@ -25,4 +25,5 @@ protected:
 private:
 	AVoxelWorld* VoxelWorld;
 	void PrintInfo();
+	void Dig();
 };
