@@ -22,6 +22,8 @@ FCustomWorldGeneratorInstance::FCustomWorldGeneratorInstance(const UCustomWorldG
 
 void FCustomWorldGeneratorInstance::Init(const FVoxelGeneratorInit& InitStruct)
 {
+	Seed = FMath::RandRange(1, 5000);
+	UE_LOG(LogTemp, Display, TEXT("WorldGenerator Init with new Seed %d"), Seed);
 	Noise.SetSeed(Seed);
 }
 

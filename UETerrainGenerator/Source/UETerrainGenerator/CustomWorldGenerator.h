@@ -46,6 +46,6 @@ public:
 
 private:
 	const float NoiseHeight;
-	const int32 Seed;
+	int32 Seed;
 	FVoxelFastNoise Noise;
 };
