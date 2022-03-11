@@ -39,6 +39,7 @@ v_flt FCustomWorldGeneratorInstance::GetValueImpl(v_flt X, v_flt Y, v_flt Z, int
 	// The voxel value is clamped between -1 and 1. That can result in a bad gradient/normal. To solve that we divide it
 	Value /= 5;
 
+	//UE_LOG(LogTemp, Warning, TEXT("VoxVal: [%f,%f,%f] Height:%f Val:%f"), X, Y, Z, Height, Value);
 	return Value;
 }
 //Sphere world Implementation

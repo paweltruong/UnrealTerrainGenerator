@@ -5,8 +5,12 @@
 #include "Kismet/GameplayStatics.h"
 #include "VoxelWorld.h"
 #include <Voxel/Public/VoxelTools/VoxelBlueprintLibrary.h>
-//#include <Voxel/Public/IVoxelPool.h>
-//#include "IVoxelPool.h"
+#include <Voxel/Public/VoxelData/VoxelData.h>
+#include <Voxel/Public/VoxelValue.h>
+//#include <Voxel/Public/VoxelTools/VoxelSurfaceTools.h>
+//#include <Voxel/Private/VoxelTools/VoxelDataTools.cpp>
+#include <Voxel/Public/VoxelTools/VoxelDataTools.h>
+//C:\Program Files(x86)\Epic Games\UE_4.27\Engine\Plugins\Marketplace\VoxelFree\Source\Voxel\Public\VoxelTools\VoxelDataTools.h
 
 void AMyPlayerController::SetupInputComponent()
 {
@@ -15,6 +19,7 @@ void AMyPlayerController::SetupInputComponent()
 	if (!InputComponent) return;
 
 	InputComponent->BindAction("ResetWorld", IE_Pressed, this, &AMyPlayerController::ResetWorld);
+	InputComponent->BindAction("GetInfo", IE_Pressed, this, &AMyPlayerController::PrintInfo);
 }
 
 void AMyPlayerController::BeginPlay()
@@ -51,9 +56,39 @@ void AMyPlayerController::ResetWorld()
 		//VoxelWorld->Destroy();
 		//UE_LOG(LogTemp, Display, TEXT("VoxelWorld Destroyed"));
 
-		FVoxelWorldCreateInfo Info;		
+		FVoxelWorldCreateInfo Info;
 		VoxelWorld->RecreateAll(Info);// CreateWorld();
 		UE_LOG(LogTemp, Display, TEXT("VoxelWorld World ReCreated"));
 	}
+}
 
+void AMyPlayerController::PrintInfo()
+{
+	UE_LOG(LogTemp, Display, TEXT("PrintInfo"));
+	if (VoxelWorld)
+	{
+		auto CurrentPawn = GetPawn();
+		if (!CurrentPawn)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("AMyPlayerController::PrintInfo() Pawn not exist"));
+			return;
+		}
+		auto PawnLocation = CurrentPawn->GetActorLocation();
+		auto VoxelPosition = VoxelWorld->GlobalToLocal(PawnLocation);
+		auto VoxelBelowPosition = VoxelWorld->GlobalToLocal(FVector(PawnLocation.X, PawnLocation.Y, PawnLocation.Z - VoxelWorld->VoxelSize));
+
+		float PawnPositionVoxelValue;
+		UVoxelDataTools::GetValue(PawnPositionVoxelValue, VoxelWorld, VoxelPosition);
+
+		float BelowPawnPositionVoxelValue;
+		UVoxelDataTools::GetValue(BelowPawnPositionVoxelValue, VoxelWorld, VoxelBelowPosition);
+
+		UE_LOG(LogTemp, Warning, TEXT("WorldPosition:%s VoxelPosition:%s Value:%f Below[%s]:%f"),
+			*CurrentPawn->GetActorLocation().ToString(),
+			*VoxelPosition.ToString(),
+			PawnPositionVoxelValue,
+			*VoxelBelowPosition.ToString(),
+			BelowPawnPositionVoxelValue
+		);
+	}
 }

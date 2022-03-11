@@ -7,6 +7,7 @@
 #include "MyPlayerController.generated.h"
 
 class AVoxelWorld;
+class FVoxelData;
 /**
  * 
  */
@@ -23,4 +24,5 @@ protected:
 	virtual void BeginPlay() override;
 private:
 	AVoxelWorld* VoxelWorld;
+	void PrintInfo();
 };
