@@ -12,6 +12,12 @@ TVoxelSharedRef<FVoxelGeneratorInstance> UCustomWorldGenerator::GetInstance()
 	return MakeVoxelShared<FCustomWorldGeneratorInstance>(*this);
 }
 
+void UCustomWorldGenerator::OnGenerateWorldOccured()
+{
+	UE_LOG(LogTemp, Warning, TEXT("OnGenerateWorld"));
+}
+
+
 ///////////////////////////////////////////////////////////////////////////////
 
 FCustomWorldGeneratorInstance::FCustomWorldGeneratorInstance(const UCustomWorldGenerator& MyGenerator)
@@ -29,13 +35,22 @@ void FCustomWorldGeneratorInstance::Init(const FVoxelGeneratorInit& InitStruct)
 
 	if (InitStruct.World)
 	{
-		InitStruct.World->OnGenerateWorld.AddDynamic(this, &FCustomWorldGeneratorInstance::OnGenerateWorld);
-	}
-}
+		auto Generator = this->Object.Get();
+		if (!Generator) 
+		{ 
+			UE_LOG(LogTemp, Error, TEXT("Generator is null"));
+			return; 
+		}
+		auto CustomGenerator = Cast<UCustomWorldGenerator>(Generator);
+		if (!CustomGenerator)
+		{
+			UE_LOG(LogTemp, Error, TEXT("CustomGenerator is null"));
+			return;
+		}
+		InitStruct.World->OnGenerateWorld.AddDynamic(CustomGenerator, &UCustomWorldGenerator::OnGenerateWorldOccured);
 
-void FCustomWorldGeneratorInstance::OnGenerateWorld()
-{
-	UE_LOG(LogTemp, Warning, TEXT("OnGenerateWorld"));
+		UE_LOG(LogTemp, Display, TEXT("Binding to OnGenerateWorld finished"));
+	}
 }
 
 v_flt FCustomWorldGeneratorInstance::GetValueImpl(v_flt X, v_flt Y, v_flt Z, int32 LOD, const FVoxelItemStack& Items) const

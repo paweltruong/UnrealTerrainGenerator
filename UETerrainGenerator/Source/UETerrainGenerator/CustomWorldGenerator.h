@@ -24,6 +24,10 @@ public:
 	//~ Begin UVoxelGenerator Interface
 	virtual TVoxelSharedRef<FVoxelGeneratorInstance> GetInstance() override;
 	//~ End UVoxelGenerator Interface
+
+
+	UFUNCTION()
+	void OnGenerateWorldOccured();
 };
 
 class FCustomWorldGeneratorInstance : public TVoxelGeneratorInstanceHelper<FCustomWorldGeneratorInstance, UCustomWorldGenerator>
@@ -49,6 +53,4 @@ private:
 	int32 Seed;
 	FVoxelFastNoise Noise;
 
-	UFUNCTION()
-	void OnGenerateWorld();
 };
