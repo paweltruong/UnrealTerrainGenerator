@@ -48,4 +48,7 @@ private:
 	const float NoiseHeight;
 	int32 Seed;
 	FVoxelFastNoise Noise;
+
+	UFUNCTION()
+	void OnGenerateWorld();
 };

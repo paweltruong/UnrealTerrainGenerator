@@ -5,6 +5,7 @@
 //#include "VoxelGeneratorExample.h"
 #include "FastNoise/VoxelFastNoise.inl"
 #include "VoxelMaterialBuilder.h"
+#include "VoxelWorld.h"
 
 TVoxelSharedRef<FVoxelGeneratorInstance> UCustomWorldGenerator::GetInstance()
 {
@@ -25,6 +26,16 @@ void FCustomWorldGeneratorInstance::Init(const FVoxelGeneratorInit& InitStruct)
 	Seed = FMath::RandRange(1, 5000);
 	UE_LOG(LogTemp, Display, TEXT("WorldGenerator Init with new Seed %d"), Seed);
 	Noise.SetSeed(Seed);
+
+	if (InitStruct.World)
+	{
+		InitStruct.World->OnGenerateWorld.AddDynamic(this, &FCustomWorldGeneratorInstance::OnGenerateWorld);
+	}
+}
+
+void FCustomWorldGeneratorInstance::OnGenerateWorld()
+{
+	UE_LOG(LogTemp, Warning, TEXT("OnGenerateWorld"));
 }
 
 v_flt FCustomWorldGeneratorInstance::GetValueImpl(v_flt X, v_flt Y, v_flt Z, int32 LOD, const FVoxelItemStack& Items) const
