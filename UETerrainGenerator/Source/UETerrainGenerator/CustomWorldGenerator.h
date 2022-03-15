@@ -53,4 +53,8 @@ private:
 	int32 Seed;
 	FVoxelFastNoise Noise;
 
+
+	UFUNCTION()
+	void OnGenerateWorldOccured();
+
 };
