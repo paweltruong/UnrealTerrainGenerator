@@ -6,6 +6,7 @@
 #include "FastNoise/VoxelFastNoise.inl"
 #include "VoxelMaterialBuilder.h"
 #include "VoxelWorld.h"
+#include "Kismet/GameplayStatics.h"
 
 TVoxelSharedRef<FVoxelGeneratorInstance> UCustomWorldGenerator::GetInstance()
 {
@@ -47,11 +48,32 @@ void FCustomWorldGeneratorInstance::Init(const FVoxelGeneratorInit& InitStruct)
 			UE_LOG(LogTemp, Error, TEXT("CustomGenerator is null"));
 			return;
 		}
+
+		auto VoxelWorld = GetVoxelWorld(CustomGenerator);
+		VoxelWorld->OnGenerateWorld.AddDynamic(CustomGenerator, &UCustomWorldGenerator::OnGenerateWorldOccured);
 		//InitStruct.World->OnGenerateWorld.AddDynamic(CustomGenerator, &UCustomWorldGenerator::OnGenerateWorldOccured);
-		InitStruct.World->OnGenerateWorld.AddDynamic(this, &FCustomWorldGeneratorInstance::OnGenerateWorldOccured);
+		//InitStruct.World->OnGenerateWorld.AddDynamic(CustomGenerator, &UCustomWorldGenerator::OnGenerateWorldOccured);
 
 		UE_LOG(LogTemp, Display, TEXT("Binding to OnGenerateWorld finished"));
 	}
+}
+
+AVoxelWorld* FCustomWorldGeneratorInstance::GetVoxelWorld(UObject* WorldContextObject)
+{
+	TArray<AActor*> Results;
+	UGameplayStatics::GetAllActorsOfClass(WorldContextObject, AVoxelWorld::StaticClass(), Results);
+	if (Results.Num() == 0)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("VoxelWorld not found"));
+		return nullptr;
+	}
+	if (Results.Num() > 1)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("More than one VoxelWorld found"));
+		return nullptr;
+	}
+	auto FoundVoxelWorld = Cast<AVoxelWorld>(Results[0]);
+	return FoundVoxelWorld;
 }
 
 void FCustomWorldGeneratorInstance::OnGenerateWorldOccured()

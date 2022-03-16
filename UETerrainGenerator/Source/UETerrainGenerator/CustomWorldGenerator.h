@@ -8,6 +8,7 @@
 #include "VoxelGenerators/VoxelGeneratorHelpers.h"
 #include "CustomWorldGenerator.generated.h"
 
+class AVoxelWorld;
 
 UCLASS(Blueprintable)
 class UETERRAINGENERATOR_API UCustomWorldGenerator : public UVoxelGenerator
@@ -57,4 +58,5 @@ private:
 	UFUNCTION()
 	void OnGenerateWorldOccured();
 
+	AVoxelWorld* GetVoxelWorld(UObject* WorldContextObject);
 };
